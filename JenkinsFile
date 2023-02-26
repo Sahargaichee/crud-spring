@@ -1,0 +1,50 @@
+pipeline {
+    agent any
+    stages {
+        stage('Checkout GIT') {
+            steps {
+                checkout([
+                    $class: 'GitSCM',
+                    branches: [[name: 'main']],
+                    userRemoteConfigs: [[url: 'https://github.com/gaichesamar/categorie_produit.git']]
+                ])
+            }
+        }
+
+        stage('MVN CLEAN') {
+            steps {
+                bat 'mvn clean'
+                    }
+                            }
+            stage('MVN COMPILE') {
+                    steps {
+                        bat 'mvn compile'
+                    }
+                }
+
+                stage('MVN PACKAGE') {
+                    steps {
+                        bat 'mvn package'
+                    }
+                }
+
+                stage('MVN TEST') {
+                    steps {
+                        bat 'mvn test'
+                    }
+                }
+                      stage('MVN SONARQUBE') {
+                                                   steps {
+                                                       bat 'mvn clean verify sonar:sonar \
+                                                              -Dsonar.projectKey=sahar \
+                                                              -Dsonar.host.url=http://localhost:9000 \
+                                                              -Dsonar.login=sqp_5ec35d1da42f52d3441416fab165f47a44e5c76e'
+                                                   }
+                                               }
+
+
+
+
+
+      }
+    }
